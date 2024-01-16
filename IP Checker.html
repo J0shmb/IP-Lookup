@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>IP Checker Tool</title>
+  <script>
+    function checkIP() {
+      var inputIP = document.getElementById("ipInput").value;
+
+      // Define IP ranges
+      var ipRanges = [
+        { location: "S01 (London, UK)", range: "185.185.76.0/24" },
+        { location: "S02 (London, UK)", range: "84.45.30.0/24" },
+        { location: "G01 (New York, USA)", range: "38.105.217.128/25" },
+        { location: "G02 (Sydney, AU)", range: "59.100.78.0/24" },
+        { location: "G03 (Melbourne, AU)", range: "59.100.83.0/24" },
+        { location: "G04 (Hong Kong)", range: "202.177.19.0/26" },
+        { location: "G05 (Singapore)", range: "202.14.13.192/26" },
+        { location: "", range: "103.73.186.0/23" },
+        { location: "", range: "5.180.188.0/22" },
+        { location: "", range: "185.185.76.0/22" }
+      ];
+
+      // Check if inputIP matches any of the specified ranges
+      var matchedLocation = null;
+      for (var i = 0; i < ipRanges.length; i++) {
+        var range = ipRanges[i].range;
+        if (ipInRange(inputIP, range)) {
+          matchedLocation = ipRanges[i].location || "Unknown location (AWS)";
+          break;
+        }
+      }
+
+      // Display the result
+      if (matchedLocation) {
+        alert("IP belongs to " + matchedLocation);
+      } else {
+        alert("IP doesn't match any specified range");
+      }
+    }
+
+    // Function to check if an IP is in a given range
+    function ipInRange(ip, range) {
+      var ipParts = ip.split(".");
+      var ipNumeric = ipParts.map(Number).reduce((acc, val, index) => acc + val * Math.pow(256, 3 - index), 0);
+      var rangeParts = range.split("/");
+      var rangeStart = rangeParts[0].split(".");
+      var rangeNumericStart = rangeStart.map(Number).reduce((acc, val, index) => acc + val * Math.pow(256, 3 - index), 0);
+      var rangeEnd = rangeParts[1] ? rangeNumericStart + Math.pow(2, 32 - rangeParts[1]) - 1 : rangeNumericStart;
+
+      return ipNumeric >= rangeNumericStart && ipNumeric <= rangeEnd;
+    }
+
+    // Add event listener for Enter key
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        checkIP();
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <h1>IP Checker Tool</h1>
+  <label for="ipInput">Enter IP:</label>
+  <input type="text" id="ipInput" placeholder="Enter IP address">
+  <button onclick="checkIP()">Check IP</button>
+</body>
+
+</html>
