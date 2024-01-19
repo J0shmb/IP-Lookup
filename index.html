@@ -2,11 +2,175 @@
 <html>
 
 <head>
-  <title>IP Checker Tool</title>
+  <title>IP Lookup Tool</title>
   <script>
     function checkIP() {
       var inputIP = document.getElementById("ipInput").value;
 
+      // Validate if the entered IP is complete
+      if (!isValidIP(inputIP)) {
+        alert("The entered IP does not match any known range.");
+        return;
+      }
+      // Specific IPs
+      
+      var specialCases = {
+      //Bandwidth Inbound
+        "81.201.84.195": "Bandwidth Intl - Los Angeles (Inbound SIP)",
+        "81.201.85.45": "Bandwidth Intl - New York (Inbound SIP)",
+        "81.201.82.45": "Bandwidth Intl - Brussels (Inbound SIP)",
+        "81.201.83.45": "Bandwidth Intl - Frankfurt (Inbound SIP)",
+        "81.201.86.45": "Bandwidth Intl - Hong Kong (Inbound SIP)",
+        "185.47.148.45": "Bandwidth Intl - Sydney (Inbound SIP)",
+      //Bandwidth Outbound
+        "81.201.84.110": "Bandwidth Intl - Los Angeles (Outbound SIP)",
+        "81.201.85.110": "Bandwidth Intl - New York (Outbound SIP)",
+        "81.201.82.250": "Bandwidth Intl - Brussels (Outbound SIP)",
+        "81.201.83.110": "Bandwidth Intl - Frankfurt (Outbound SIP)",
+        "81.201.86.110": "Bandwidth Intl - Hong Kong (Outbound SIP)",
+        "185.47.148.110": "Bandwidth Intl - Sydney (Outbound SIP)",
+        "216.82.224.117": "Bandwidth US - New York City, NY, US",
+        "216.82.227.214": "Bandwidth US - Atlanta, GA, US",
+      //BICS
+        "94.102.167.10": "BICS - Brussels, BE (Via Direct Connect - First Class Mobile)",
+        "94.102.167.15": "BICS - Brussels, BE (Via Direct Connect - SIP Trunking / Cloud Numbers & ITFS)",
+        "80.84.31.228": "BICS - Brussels, BE (Via Internet - SIP Trunking / Cloud Numbers & ITFS)",
+        "94.102.167.48": "BICS - Marseille, FR (Via Direct Connect - First Class Mobile)",
+        "94.102.167.54": "BICS - Marseille, FR (Via Direct Connect - SIP Trunking / Cloud Numbers & ITFS)",
+        "94.102.175.209": "BICS - Marseille, FR (Via Internet - SIP Trunking)",
+        "94.102.175.222": "BICS - Marseille, FR (Via Internet - First Class Mobile)",
+        "80.84.30.40": "BICS - New York City, NY, USA (Via Internet - SIP Trunking)",
+        "80.84.30.61": "BICS - New York City, NY, USA (Via Internet - First Class Mobile / Cloud Numbers & ITFS)",
+        "80.84.30.15": "BICS - Ashburn, VA, USA (Via Internet - SIP Trunking / Cloud Numbers & ITFS)",
+        "80.84.29.19": "BICS - Hong Kong, China (Via Internet - SIP Trunking)",
+        "80.84.29.19": "BICS - Hong Kong, China (Via Internet - First Class Mobile / Cloud Numbers & ITFS)",
+        "80.84.29.40": "BICS - Singapore, SG (Via Internet - SIP Trunking)",
+        "80.84.29.62": "BICS - Singapore, SG (Via Internet - First Class Mobile / Cloud Numbers & ITFS)",
+      //CommsGroup
+        "52.65.101.12": "CommsGroup - Sydney, NSW, AU (CTS)",
+      //COLT
+        // UK
+        "217.110.38.239": "COLT UK - Frankfurt, DE (Colt SIP)",
+        "217.110.38.246": "COLT UK - Frankfurt, DE (Colt RTP)",
+        "193.113.183.202": "COLT UK - Frankfurt, DE (Colt RTP)",
+        "217.110.38.240": "COLT UK - Paris, FR (Colt SIP)",
+        "84.14.246.196": "COLT UK - Paris, FR (Colt RTP)",
+        "84.14.246.203": "COLT UK - Paris, FR (Colt RTP)",
+        "84.14.246.197": "COLT UK - Paris, FR (Colt SIP)",
+        // BE
+        "84.14.87.164": "COLT BE - Frankfurt, DE (Colt SIP)",
+        "84.14.87.169": "COLT BE - rankfurt, DE (Colt RTP)",
+        "84.14.87.165": "COLT BE - Frankfurt, DE (Colt SIP)",
+        "84.14.246.196": "COLT BE - Paris, FR (Colt RTP)",
+        "84.14.246.205": "COLT BE - Paris, FR (Colt RTP)",
+        "84.14.246.197": "COLT BE - Paris, FR (Colt SIP)",
+        // PT
+        "84.14.87.164": "COLT PT - Frankfurt, DE (Colt SIP)",
+        "84.14.87.170": "COLT PT - Frankfurt, DE (Colt RTP)",
+        "84.14.87.165": "COLT PT - Frankfurt, DE (Colt SIP)",
+        "84.14.246.196": "COLT PT - Paris, FR (Colt RTP)",
+        "84.14.246.206": "COLT PT - Paris, FR (Colt RTP)",
+        "84.14.246.197": "COLT PT - Paris, FR (Colt SIP)",
+        // CH
+        "84.14.87.164": "COLT CH - Frankfurt, DE (Colt SIP)",
+        "84.14.87.171": "COLT CH - Frankfurt, DE (Colt RTP)",
+        "84.14.87.165": "COLT CH - Frankfurt, DE (Colt SIP)",
+        "84.14.246.196": "COLT CH - Paris, FR (Colt RTP)",
+        "84.14.246.207": "COLT CH - Paris, FR (Colt RTP)",
+        "84.14.246.197": "COLT CH - Paris, FR (Colt SIP)",
+        // IT
+        "84.14.87.164": "COLT IT - Frankfurt, DE (Colt SIP)",
+        "84.14.87.172": "COLT IT - Frankfurt, DE (Colt RTP)",
+        "84.14.87.165": "COLT IT - Frankfurt, DE (Colt SIP)",
+        "84.14.246.196": "COLT IT - Paris, FR (Colt RTP)",
+        "84.14.246.208": "COLT IT - Paris, FR (Colt RTP)",
+        "84.14.246.197": "COLT IT - Paris, FR (Colt SIP)",
+        // NL
+        "84.14.87.164": "COLT NL - Frankfurt, DE (Colt SIP)",
+        "84.14.87.173": "COLT NL - Frankfurt, DE (Colt RTP)",
+        "84.14.87.165": "COLT NL - Frankfurt, DE (Colt SIP)",
+        "84.14.246.196": "COLT NL - Paris, FR (Colt RTP)",
+        "84.14.246.209": "COLT NL - Paris, FR (Colt RTP)",
+        "84.14.246.197": "COLT NL - Paris, FR (Colt SIP)",
+        // IE
+        "84.14.87.164": "COLT IE - Frankfurt, DE (Colt SIP)",
+        "84.14.87.174": "Frankfurt, DE (Colt RTP)",
+        "84.14.87.165": "COLT IE - Frankfurt, DE (Colt SIP)",
+        "84.14.246.196": "COLT IE - Paris, FR (Colt RTP)",
+        "84.14.246.210": "COLT IE - Paris, FR (Colt RTP)",
+        "84.14.246.197": "COLT IE - Paris, FR (Colt SIP)",
+        // DK
+        "84.14.87.164": "COLT DK - Frankfurt, DE (Colt SIP)",
+        "84.14.87.175": "COLT DK - Frankfurt, DE (Colt RTP)",
+        "84.14.87.165": "COLT DK - Frankfurt, DE (Colt SIP)",
+        "84.14.246.196": "COLT DK - Paris, FR (Colt RTP)",
+        "84.14.246.216": "COLT DK - Paris, FR (Colt RTP)",
+        "84.14.246.197": "COLT DK - Paris, FR (Colt SIP)",
+        // FR
+        "84.14.87.164": "COLT FR - Frankfurt, DE (Colt SIP)",
+        "84.14.87.176": "COLT FR - Frankfurt, DE (Colt RTP)",
+        "84.14.87.165": "COLT FR - Frankfurt, DE (Colt SIP)",
+        "84.14.246.196": "COLT FR - Paris, FR (Colt RTP)",
+        "84.14.246.211": "COLT FR - Paris, FR (Colt RTP)",
+        "84.14.246.197": "COLT FR - Paris, FR (Colt SIP)",
+        // AT
+        "84.14.87.164": "COLT AT - Frankfurt, DE (Colt SIP)",
+        "84.14.87.177": "COLT AT - Frankfurt, DE (Colt RTP)",
+        "84.14.87.165": "COLT AT - Frankfurt, DE (Colt SIP)",
+        "84.14.246.196": "COLT AT - Paris, FR (Colt RTP)",
+        "84.14.246.212": "COLT AT -  Paris, FR (Colt RTP)",
+        "84.14.246.197": "COLT AT - Paris, FR (Colt SIP)",
+        // SE
+        "84.14.87.164": "COLT SE - Frankfurt, DE (Colt SIP)",
+        "84.14.87.178": "COLT SE - Frankfurt, DE (Colt RTP)",
+        "84.14.87.165": "COLT SE - Frankfurt, DE (Colt SIP)",
+        "84.14.246.196": "COLT SE - Paris, FR (Colt RTP)",
+        "84.14.246.213": "COLT SE - Paris, FR (Colt RTP)",
+        "84.14.246.197": "COLT SE - Paris, FR (Colt SIP)",
+        // ES
+        "84.14.87.164": "COLT ES - Frankfurt, DE (Colt SIP)",
+        "84.14.87.179": "COLT ES - Frankfurt, DE (Colt RTP)",
+        "84.14.87.165": "COLT ES - Frankfurt, DE (Colt SIP)",
+        "84.14.246.196": "COLT ES - Paris, FR (Colt RTP)",
+        "84.14.246.214": "COLT ES - Paris, FR (Colt RTP)",
+        "84.14.246.197": "COLT ES - Paris, FR (Colt SIP)",
+        // DE
+        "84.14.87.164": "COLT DE - Frankfurt, DE (Colt SIP)",
+        "84.14.87.181": "COLT DE - Frankfurt, DE (Colt RTP)",
+        "84.14.87.165": "COLT DE - Frankfurt, DE (Colt SIP)",
+        "84.14.246.196": "COLT DE - Paris, FR (Colt RTP)",
+        "84.14.246.215": "COLT DE - Paris, FR (Colt RTP)",
+        "84.14.246.197": "COLT DE - Paris, FR (Colt SIP)",
+        // Colt Global
+        "84.14.87.183": "COLT Global - Frankfurt, DE (Colt SIP)",
+        "84.14.246.204": "COLT Global - Frankfurt, DE (Colt SIP)",
+        "84.14.87.164": "COLT Global - Paris, FR (Colt RTP)",
+        "84.14.87.165": "COLT Global - Paris, FR (Colt RTP)",
+        "84.14.246.196": "COLT Global - Paris, FR (Colt RTP)",
+        "84.14.246.197": "COLT Global - Paris, FR (Colt RTP)",
+      //DTAG
+        "178.22.9.14": "DTAG - London, UK (SIP)", 
+        "178.22.13.14": "DTAG - Boston, MA, US (SIP)",
+        "212.118.233.114":"DTAG - London, UK (RTP)", 
+      //IDT
+        "213.166.103.1": "IDT - London, UK (SIP)",
+        "66.33.147.149": "IDT - Newark, NJ, US (SIP)",
+        "216.53.4.1": "IDT - Newark, NJ, US (SIP)",
+        "111.235.152.129": "IDT - Hong Kong, China (SIP)",
+      //Inteliquent
+        "206.147.72.72": "Inteliquent - New York City, NY, USA (SIP)"
+        "206.147.76.40": "Inteliquent - Philadelphia, PA, USA (SIP)"
+        "206.147.72.73": "Inteliquent - New York City, NY, USA (SIP)"
+        "206.147.76.41": "Inteliquent - Philadelphia, PA, USA (SIP)"
+      //Leon
+        "195.66.73.26": "Leon (SIP)"
+      };
+
+      // Check for special cases
+      if (specialCases.hasOwnProperty(inputIP)) {
+        alert("IP belongs to " + specialCases[inputIP]);
+        return;
+      }
       // Define IP ranges
       var ipRanges = [
         { location: "S01 (London, UK)", range: "185.185.76.0/24" },
@@ -16,17 +180,42 @@
         { location: "G03 (Melbourne, AU)", range: "59.100.83.0/24" },
         { location: "G04 (Hong Kong)", range: "202.177.19.0/26" },
         { location: "G05 (Singapore)", range: "202.14.13.192/26" },
-        { location: "", range: "103.73.186.0/23" },
-        { location: "", range: "5.180.188.0/22" },
-        { location: "", range: "185.185.76.0/22" }
-      ];
+        { location: "AWS", range: "103.73.186.0/23" },
+        { location: "AWS", range: "5.180.188.0/22" },
+        { location: "AWS", range: "185.185.76.0/22" },
+    // Carrier IP ranges
+        //Bandwidth RTP
+        { location: "Bandwidth Intl - Los Angeles (RTP)", range: "81.201.84.0/24" },
+        { location: "Bandwidth Intl - New York (RTP)", range: "81.201.85.0/24" },
+        { location: "Bandwidth Intl - Brussels (RTP)", range: "81.201.82.0/24" },
+        { location: "Bandwidth Intl - Frankfurt (RTP)", range: "81.201.83.0/24" },
+        { location: "Bandwidth Intl - Hong Kong (RTP)", range: "81.201.86.0/24" },
+        { location: "Bandwidth Intl - Sydney (RTP)", range: "185.47.148.0/24" },
+        { location: "Bandwidth US - New York City, NY, US (RTP)", range: "216.82.224.0/24" },
+        { location: "Bandwidth US - Atlanta, GA, US (RTP)", range: " 216.82.227.0/24" }, 
+        //BICS RTP     
+        { location: "BICS - Brussels, BE (RTP - Via Direct Connect)", range: "94.102.167.0/27" },
+        { location: "BICS - Brussels, BE (RTP - Via Internet)", range: "80.84.31.0/24" },
+        { location: "BICS - Marseille, FR (RTP - Via Direct Connect)", range: "94.102.167.32/27" },
+        { location: "BICS - Marseille, FR (RTP - Via Internet)", range: "94.102.175.0/24" },
+        { location: "BICS - US East", range: "80.84.30.0/24" },
+        { location: "BICS - Asia", range: "80.84.29.0/24" },
+        //Inteliquent Inbound Toll-Free and Outbound
+        { location: "Inteliquent - New York City, NY, USA (RTP - Inbound Toll-Free)", range: "206.147.72.64/28" },
+        { location: "Inteliquent - Philadelphia, PA, USA (RTP - Inbound Toll-Free)", range: "206.147.76.16/28" },
+        { location: "Inteliquent - New York City, NY, USA (RTP - Outbound)", range: "206.147.72.64/28" },
+        { location: "Inteliquent - Philadelphia, PA, USA (RTP - Outbound)", range: "206.147.76.16/28" },
+        //Leon
+        { location: "Leon - (RTP)", range: "188.137.2.0/24" },
+        ];
+
 
       // Check if inputIP matches any of the specified ranges
       var matchedLocation = null;
       for (var i = 0; i < ipRanges.length; i++) {
         var range = ipRanges[i].range;
         if (ipInRange(inputIP, range)) {
-          matchedLocation = ipRanges[i].location || "Unknown location (AWS)";
+          matchedLocation = ipRanges[i].location;
           break;
         }
       }
@@ -34,8 +223,6 @@
       // Display the result
       if (matchedLocation) {
         alert("IP belongs to " + matchedLocation);
-      } else {
-        alert("IP doesn't match any specified range");
       }
     }
 
@@ -48,7 +235,15 @@
       var rangeNumericStart = rangeStart.map(Number).reduce((acc, val, index) => acc + val * Math.pow(256, 3 - index), 0);
       var rangeEnd = rangeParts[1] ? rangeNumericStart + Math.pow(2, 32 - rangeParts[1]) - 1 : rangeNumericStart;
 
+      // Handle the case where the IP is exactly equal to the lower or upper bounds of the range
       return ipNumeric >= rangeNumericStart && ipNumeric <= rangeEnd;
+    }
+
+    // Validation function for checking if the entered IP is complete
+    function isValidIP(ip) {
+      // Split the IP address and check if each part is valid
+      var ipParts = ip.split(".");
+      return ipParts.length === 4 && ipParts.every(part => part !== "" && Number.isInteger(Number(part)) && Number(part) >= 0 && Number(part) <= 255);
     }
 
     // Add event listener for Enter key
@@ -61,7 +256,7 @@
 </head>
 
 <body>
-  <h1>IP Checker Tool</h1>
+  <h1>IP Lookup Tool</h1>
   <label for="ipInput">Enter IP:</label>
   <input type="text" id="ipInput" placeholder="Enter IP address">
   <button onclick="checkIP()">Check IP</button>
