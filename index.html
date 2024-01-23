@@ -261,21 +261,25 @@
 
 
       // Check if inputIP matches any of the specified ranges
-      var matchedLocation = null;
-      for (var i = 0; i < ipRanges.length; i++) {
-        var range = ipRanges[i].range;
-        if (ipInRange(inputIP, range)) {
-          matchedLocation = ipRanges[i].location;
-          break;
-        }
-      }
+  var matchedLocation = null;
+  for (var i = 0; i < ipRanges.length; i++) {
+    var range = ipRanges[i].range;
 
-      // Display the result
-      if (matchedLocation) {
-        alert("IP belongs to " + matchedLocation);
-      }
+    console.log("Checking range:", range);
+
+    if (ipInRange(inputIP, range)) {
+      matchedLocation = ipRanges[i].location;
+      break;
     }
+  }
 
+  // Display the result
+  if (matchedLocation) {
+    alert("IP belongs to " + matchedLocation);
+  } else {
+    alert("The entered IP does not match any known range.");
+  }
+}
     // Function to check if an IP is in a given range
     function ipInRange(ip, range) {
       var ipParts = ip.split(".");
